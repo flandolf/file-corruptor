@@ -1,0 +1,42 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+    - name: CD to frontend
+      run: cd frontend/
+    
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build the app
+      run: npm run build
+
+    - name: Zip the build output
+      run: |
+        mkdir build-zip
+        zip -r build-zip/build.zip dist/
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        name: Release ${GITHUB_REF#refs/tags/}
+        tag: ${{ github.ref }}
+        files: |
+          frontend.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
