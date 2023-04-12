@@ -3,9 +3,9 @@ const cors = require("cors");
 const fs = require("fs");
 const { promisify } = require("util");
 const { fileCorruptor } = require("./utils/corruptFile");
-
+const dotenv = require("dotenv");
+dotenv.config();
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +23,7 @@ app.post("/api/corrupt", async (req, res) => {
     const corruptedFileName = `${fileName}_corrupted.${extension}`;
     await writeFile(corruptedFileName, corruptedData);
     res.set("Content-Disposition", `attachment; filename=${corruptedFileName}`);
-    res.sendFile(corruptedFileName, { root: __dirname });
+    res.status(200).sendFile(corruptedFileName, { root: __dirname });
   } catch (err) {
     console.error(err);
     res
@@ -32,7 +32,7 @@ app.post("/api/corrupt", async (req, res) => {
   }
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
