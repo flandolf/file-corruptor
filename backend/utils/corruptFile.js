@@ -4,12 +4,7 @@ const { promisify } = require("util");
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
-async function corruptFile(
-  inputFilePath,
-  outputFilePath,
-  type = "random",
-  strength = 50
-) {
+async function corruptFile(inputFilePath, type = "random", strength = 50) {
   const fileContent = await readFile(inputFilePath);
   let corruptedContent;
   switch (type) {
@@ -25,7 +20,12 @@ async function corruptFile(
     default:
       throw new Error(`Invalid corruption type: ${type}`);
   }
+  // Rename the file to contain no spaces
+  let outputFilePath = inputFilePath.replace(/ /g, "_");
+  outputFilePath = outputFilePath.replace(/\\/g, "/");
   await writeFile(outputFilePath, corruptedContent);
+
+  return outputFilePath.toString();
 }
 
 function corruptFileRandom(fileContent, strength) {
@@ -42,18 +42,19 @@ function corruptFileRandom(fileContent, strength) {
 }
 
 function corruptFileRepeating(fileContent, strength) {
+  // Move around the bytes in the file
   const corruptedContent = new Uint8Array(fileContent.length);
-  let currentByte = 0;
   for (let i = 0; i < fileContent.length; i++) {
     const r = Math.random();
     if (r < strength / 100) {
-      corruptedContent[i] = fileContent[currentByte];
+      const offset = Math.floor(Math.random() * 10);
+      if (i + offset < fileContent.length) {
+        corruptedContent[i] = fileContent[i + offset];
+      } else {
+        corruptedContent[i] = fileContent[i];
+      }
     } else {
-      corruptedContent[i] = Math.floor(Math.random() * 256);
-    }
-    currentByte++;
-    if (currentByte >= fileContent.length) {
-      currentByte = 0;
+      corruptedContent[i] = fileContent[i];
     }
   }
   return corruptedContent;

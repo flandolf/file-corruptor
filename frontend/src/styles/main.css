@@ -1,16 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400&family=Roboto:wght@300;400&display=swap");
 :root {
   background: linear-gradient(
-    90deg,
+    45deg,
     rgb(35, 137, 255) 0%,
-    rgb(38, 89, 255) 100%
+    rgb(30, 60, 156) 100%
   );
   height: 100vh;
   width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Roboto", sans-serif;
+  font-family: "Fira Sans", sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -21,7 +21,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-color: rgba(49, 47, 47, 1);
+  background-color: #2e2b2b;
   padding: 30px;
   color: white;
   border-radius: 10px;

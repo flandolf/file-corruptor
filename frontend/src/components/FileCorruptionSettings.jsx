@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Radio, Slider } from "antd";
-function FileCorruptionSettings() {
-  const [corruptionType, setCorruptionType] = useState("random");
-  const [corruptionStrength, setCorruptionStrength] = useState(50);
-
+function FileCorruptionSettings({
+  corruptionType,
+  setCorruptionType,
+  corruptionStrength,
+  setCorruptionStrength,
+}) {
   const handleTypeChange = (event) => {
-    setCorruptionType(event);
+    setCorruptionType(event.target.value);
   };
 
   const handleStrengthChange = (event) => {
