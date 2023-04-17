@@ -33,7 +33,7 @@ jobs:
       with:
         name: Release ${GITHUB_REF#refs/tags/}
         tag: ${{ github.ref }}
-        files: |
+        artifact: |
           frontend.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
