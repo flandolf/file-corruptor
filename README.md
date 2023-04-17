@@ -35,9 +35,6 @@ yarn
     ```
 2. Run the frontend
     ```bash
-    cd frontend
-    ```
-    ```bash
     yarn dev
     ```
 3. Point browser to the vite server and enjoy!
