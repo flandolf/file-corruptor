@@ -26,14 +26,14 @@ jobs:
     - name: Zip the build output
       run: |
         mkdir build-zip
-        zip -r build-zip/build.zip dist/
+        zip -r frontend.zip dist/
 
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
         name: Release ${GITHUB_REF#refs/tags/}
         tag: ${{ github.ref }}
-        artifact: |
+        artifacts: |
           frontend.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
