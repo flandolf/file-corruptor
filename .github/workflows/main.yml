@@ -31,8 +31,6 @@ jobs:
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
-        name: Release ${GITHUB_REF#refs/tags/}
-        tag: ${{ github.ref }}
         artifacts: |
           frontend.zip
       env:
