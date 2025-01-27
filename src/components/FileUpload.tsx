@@ -23,47 +23,51 @@ function FileUpload({ corruptionType, corruptionStrength }: FileUploadProps) {
         }
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    function corruptFile(file: File, corruptionStrength: number): Promise<Blob> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const arrayBuffer = reader.result as ArrayBuffer;
+                const uint8Array = new Uint8Array(arrayBuffer);
+
+                // Simple corruption logic: flip bits based on corruptionStrength
+                for (let i = 0; i < uint8Array.length; i++) {
+                    if (Math.random() < corruptionStrength / 100) {
+                        uint8Array[i] = ~uint8Array[i];
+                    }
+                }
+
+                resolve(new Blob([uint8Array], { type: file.type }));
+            };
+            reader.onerror = reject;
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    const handleSubmit = () => {
         if (!selectedFile) {
             return;
         }
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        fetch(`${url}api/corrupt`, {
-            method: 'POST',
-            headers: {
-                'corruption-type': corruptionType.toString(),
-                'corruption-strength': corruptionStrength.toString(),
-            },
-            body: formData,
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    notification.error({
-                        message: 'Error',
-                        description: 'Error while processing request.',
-                    });
-                    throw new Error('Error downloading the file');
-                }
-                return response.blob();
-            })
-            .then((blob) => {
-                const url = URL.createObjectURL(blob);
+        setIsLoading(true);
+        corruptFile(selectedFile, 100)
+            .then((corruptedBlob) => {
+                const url = URL.createObjectURL(corruptedBlob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'corrupted-file'; // Set the desired file name
+                a.download = selectedFile.name; // Use the original file name
                 a.style.display = 'none';
                 document.body.appendChild(a);
                 a.click();
                 URL.revokeObjectURL(url);
                 document.body.removeChild(a);
+                setIsLoading(false);
             })
             .catch((error) => {
                 notification.error({
                     message: 'Error',
-                    description: 'Error while processing request. ' + error,
+                    description: 'Error while processing file. ' + error,
                 });
+                setIsLoading(false);
             });
     };
 
@@ -91,9 +95,7 @@ function FileUpload({ corruptionType, corruptionStrength }: FileUploadProps) {
                 <div>
                     <Button
                         type="primary"
-                        onClick={() => {
-                            handleSubmit;
-                        }}
+                        onClick={handleSubmit}
                         loading={isLoading}
                         icon={isLoading ? undefined : <UploadOutlined />}
                     >

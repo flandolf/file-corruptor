@@ -2,7 +2,6 @@ import { Card, ConfigProvider, Switch, Typography, theme } from 'antd';
 import { useDarkMode } from './lib/darkModeContext';
 const { defaultAlgorithm, darkAlgorithm } = theme;
 import { useState } from 'react';
-import FileCorruptionSettings from './components/FileSettings';
 import FileUpload from './components/FileUpload';
 const App = () => {
     const { darkMode, setDarkMode } = useDarkMode();
@@ -17,12 +16,13 @@ const App = () => {
                 },
             }}
         >
-            <Card className="container">
+            <Card className="container" style={{ padding: '20px' }}>
                 <div
                     style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
+                        marginBottom: '20px',
                     }}
                 >
                     <Typography.Title
@@ -43,19 +43,12 @@ const App = () => {
                         }}
                         style={{
                             padding: '0px',
-                            margin: '0px',
+                            margin: '0 10px',
                             alignSelf: 'center',
                         }}
                     />
                 </div>
-                <FileCorruptionSettings
-                    corruptionType={corruptionType}
-                    setCorruptionType={setCorruptionType}
-                    corruptionStrength={corruptionStrength}
-                    setCorruptionStrength={setCorruptionStrength}
-                />
                 <FileUpload corruptionType={corruptionType} corruptionStrength={corruptionStrength} />
-                <footer>(c) 2023 Andy Wang</footer>
             </Card>
         </ConfigProvider>
     );
